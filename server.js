@@ -19,6 +19,8 @@ app.use(logger);
 app.use(express.json());
 
 app.use("/", router);
+app.use("/type/:type", type);
+app.use("/language/:language", language);
 
 app.listen(PORT,  () => {
    console.log(`✅ Servidor rodando na porta ${PORT}`);
