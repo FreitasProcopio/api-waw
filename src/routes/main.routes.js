@@ -23,6 +23,4 @@ router.get("/type/:type", buscarPorTipo); // /type ("type":"adjetivo")
 router.post("/language", buscarPorLingua); // /language ("language":"inglês")
 router.post("/people", buscarPorPovo); // /people ("people":"tupi")
 
-
-
 export default router;
