@@ -3,36 +3,27 @@ const prisma = new PrismaClient();
 
 export const PalavrasService = {
     async criarPalavras(language, type, people, contexto) {
-        
         if (!language || !type || !people || !contexto) {
             throw new Error("Está faltando inserir as credenciais obrigatórias");
         }
-        
-        const response = await fetch('http://127.0.0.1:5000/symbols', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+
+        // Verifica se já existe no banco
+        const existente = await prisma.palavras.findFirst({
+            where: { language, type, people, contexto }
         });
-        if (!response.ok) {
-            throw new Error("Erro ao acessar a API");
+        if (existente) {
+            return existente;
         }
-        const data = await response.json();
-        if (!Array.isArray(data.symbols) || data.symbols.length === 0) {
-            throw new Error("Nenhum símbolo encontrado no JSON.");
-        }
-        const symbol = data.symbols[data.symbols.length - 1];
-        if (!symbol || !symbol.image || !symbol.char ) {
-            throw new Error("Dados do símbolo estão incompletos.");
-        }
-        const { image, char } = symbol;
-        
+
+        // Não existe, cria novo registro vazio ou com dados mínimos
         const novasPalavras = await prisma.palavras.create({
             data: {
                 language,
                 type,
                 people,
                 contexto,
-                imagem: image,
-                caracter: char
+                imagem: null,
+                caracter: null
             }
         });
         return novasPalavras;
